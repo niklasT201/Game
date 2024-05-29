@@ -40,6 +40,14 @@ const platforms = [
     { x: 66 * gridSize, y: 14 * gridSize, width: 4 * gridSize, height: gridSize },
 ];
 
+const enemies = [
+    { x: 8 * gridSize, y: 13 * gridSize, width: gridSize, height: gridSize, speed: 2, direction: 1, velocityY: 0, grounded: false },
+    { x: 24 * gridSize, y: 7 * gridSize, width: gridSize, height: gridSize, speed: 2, direction: 1, velocityY: 0, grounded: false },
+    { x: 38 * gridSize, y: 11 * gridSize, width: gridSize, height: gridSize, speed: 2, direction: 1, velocityY: 0, grounded: false }
+];
+
+const goal = { x: 66 * gridSize, y: 13 * gridSize, width: gridSize, height: gridSize };
+
 function drawPlatform(platform) {
     ctx.fillStyle = '#654321';
     ctx.fillRect(platform.x - camera.x, platform.y, platform.width, platform.height);
@@ -48,6 +56,16 @@ function drawPlatform(platform) {
 function drawPlayer() {
     ctx.fillStyle = '#ff0000';
     ctx.fillRect(player.x - camera.x, player.y, player.width, player.height);
+}
+
+function drawEnemy(enemy) {
+    ctx.fillStyle = '#0000ff';
+    ctx.fillRect(enemy.x - camera.x, enemy.y, enemy.width, enemy.height);
+}
+
+function drawGoal() {
+    ctx.fillStyle = '#00ff00';
+    ctx.fillRect(goal.x - camera.x, goal.y, goal.width, goal.height);
 }
 
 function updatePlayer() {
@@ -95,12 +113,79 @@ function updatePlayer() {
         }
     });
 
-     // Prevent player from going out of bounds
-     if (player.x < 0) player.x = 0;
-     if (player.x + player.width > platforms[platforms.length - 1].x + platforms[platforms.length - 1].width) {
-         player.x = platforms[platforms.length - 1].x + platforms[platforms.length - 1].width - player.width;
-     }
- }
+    // Prevent player from going out of bounds
+    if (player.x < 0) player.x = 0;
+    if (player.x + player.width > platforms[platforms.length - 1].x + platforms[platforms.length - 1].width) {
+        player.x = platforms[platforms.length - 1].x + platforms[platforms.length - 1].width - player.width;
+    }
+
+    // Check collision with enemies
+    enemies.forEach(enemy => {
+        if (player.x < enemy.x + enemy.width &&
+            player.x + player.width > enemy.x &&
+            player.y < enemy.y + enemy.height &&
+            player.y + player.height > enemy.y) {
+            // Reset player position on collision
+            player.x = 1 * gridSize;
+            player.y = 14 * gridSize;
+        }
+    });
+
+    // Check if player reaches the goal
+    if (player.x < goal.x + goal.width &&
+        player.x + player.width > goal.x &&
+        player.y < goal.y + goal.height &&
+        player.y + player.height > goal.y) {
+        alert('You reached the goal!');
+        player.x = 1 * gridSize;
+        player.y = 14 * gridSize;
+    }
+
+    // Reset player if they fall off the platforms
+    if (player.y > canvas.height) {
+        player.x = 1 * gridSize;
+        player.y = 14 * gridSize;
+    }
+}
+
+function updateEnemies() {
+    enemies.forEach(enemy => {
+        enemy.velocityY += gravity;
+
+        enemy.x += enemy.speed * enemy.direction;
+        enemy.y += enemy.velocityY;
+
+        // Collision with platforms
+        enemy.grounded = false;
+        platforms.forEach(platform => {
+            if (enemy.x < platform.x + platform.width &&
+                enemy.x + enemy.width > platform.x &&
+                enemy.y < platform.y + platform.height &&
+                enemy.y + enemy.height > platform.y) {
+
+                if (enemy.y + enemy.height - enemy.velocityY <= platform.y) { // from top
+                    enemy.y = platform.y - enemy.height;
+                    enemy.velocityY = 0;
+                    enemy.grounded = true;
+                } else if (enemy.y - enemy.velocityY >= platform.y + platform.height) { // from bottom
+                    enemy.y = platform.y + platform.height;
+                    enemy.velocityY = 0;
+                } else if (enemy.x + enemy.width - enemy.speed * enemy.direction <= platform.x) { // from left
+                    enemy.x = platform.x - enemy.width;
+                    enemy.direction *= -1;
+                } else if (enemy.x - enemy.speed * enemy.direction >= platform.x + platform.width) { // from right
+                    enemy.x = platform.x + platform.width;
+                    enemy.direction *= -1;
+                }
+            }
+        });
+
+        // Reverse direction when hitting screen edges
+        if (enemy.x < 0 || enemy.x + enemy.width > gridWidth * gridSize) {
+            enemy.direction *= -1;
+        }
+    });
+}
 
 const camera = {
     x: 0,
@@ -117,26 +202,28 @@ function updateCamera() {
     }
 }
 
-
 function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     platforms.forEach(drawPlatform);
     updatePlayer();
+    updateEnemies();
     updateCamera();
     drawPlayer();
+    enemies.forEach(drawEnemy);
+    drawGoal();
     requestAnimationFrame(gameLoop);
 }
 
 document.addEventListener('keydown', (event) => {
     if (event.key === 'a' || event.key === 'A') keys.left = true;
     if (event.key === 'd' || event.key === 'D') keys.right = true;
-    if (event.key === ' ') keys.space = true;
+    if (event.key === ' ' || event.key === 'w' || event.key === 'W') keys.space = true;
 });
 
 document.addEventListener('keyup', (event) => {
     if (event.key === 'a' || event.key === 'A') keys.left = false;
     if (event.key === 'd' || event.key === 'D') keys.right = false;
-    if (event.key === ' ') keys.space = false;
+    if (event.key === ' ' || event.key === 'w' || event.key === 'W') keys.space = false;
 });
 
 gameLoop();
