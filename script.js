@@ -41,12 +41,25 @@ const platforms = [
 ];
 
 const enemies = [
-    { x: 8 * gridSize, y: 13 * gridSize, width: gridSize, height: gridSize, speed: 2, direction: 1, velocityY: 0, grounded: false },
-    { x: 24 * gridSize, y: 7 * gridSize, width: gridSize, height: gridSize, speed: 2, direction: 1, velocityY: 0, grounded: false },
-    { x: 38 * gridSize, y: 11 * gridSize, width: gridSize, height: gridSize, speed: 2, direction: 1, velocityY: 0, grounded: false }
+    { x: 8 * gridSize, y: 13 * gridSize, width: gridSize, height: gridSize, speed: 2, direction: 1, velocityY: 0, grounded: false, initialX: 8 * gridSize, initialY: 13 * gridSize },
+    { x: 24 * gridSize, y: 7 * gridSize, width: gridSize, height: gridSize, speed: 2, direction: 1, velocityY: 0, grounded: false, initialX: 24 * gridSize, initialY: 7 * gridSize },
+    { x: 38 * gridSize, y: 11 * gridSize, width: gridSize, height: gridSize, speed: 2, direction: 1, velocityY: 0, grounded: false, initialX: 38 * gridSize, initialY: 11 * gridSize }
 ];
 
 const goal = { x: 66 * gridSize, y: 13 * gridSize, width: gridSize, height: gridSize };
+
+let gameState = 'start';
+
+function resetEnemies() {
+    enemies.forEach(enemy => {
+        enemy.x = enemy.initialX;
+        enemy.y = enemy.initialY;
+        enemy.velocityY = 0;
+        enemy.direction = 1;
+        enemy.grounded = false;
+    });
+}
+
 
 function drawPlatform(platform) {
     ctx.fillStyle = '#654321';
@@ -128,6 +141,7 @@ function updatePlayer() {
             // Reset player position on collision
             player.x = 1 * gridSize;
             player.y = 14 * gridSize;
+            gameState = 'gameOver';
         }
     });
 
@@ -145,6 +159,7 @@ function updatePlayer() {
     if (player.y > canvas.height) {
         player.x = 1 * gridSize;
         player.y = 14 * gridSize;
+        gameState = 'gameOver';
     }
 }
 
@@ -202,15 +217,61 @@ function updateCamera() {
     }
 }
 
+function drawStartMenu() {
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#fff';
+    ctx.font = '48px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Press Enter to Start', canvas.width / 2, canvas.height / 2);
+}
+
+function drawPauseMenu() {
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#fff';
+    ctx.font = '48px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Paused', canvas.width / 2, canvas.height / 2);
+    ctx.font = '24px sans-serif';
+    ctx.fillText('Press P to Resume', canvas.width / 2, canvas.height / 2 + 40);
+}
+
+function drawGameOverMenu() {
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = '#fff';
+    ctx.font = '48px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Game Over', canvas.width / 2, canvas.height / 2);
+    ctx.font = '24px sans-serif';
+    ctx.fillText('Press Enter to Restart', canvas.width / 2, canvas.height / 2 + 40);
+}
+
 function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    platforms.forEach(drawPlatform);
-    updatePlayer();
-    updateEnemies();
-    updateCamera();
-    drawPlayer();
-    enemies.forEach(drawEnemy);
-    drawGoal();
+
+    switch (gameState) {
+        case 'start':
+            drawStartMenu();
+            break;
+        case 'playing':
+            platforms.forEach(drawPlatform);
+            updatePlayer();
+            updateEnemies();
+            updateCamera();
+            drawPlayer();
+            enemies.forEach(drawEnemy);
+            drawGoal();
+            break;
+        case 'paused':
+            drawPauseMenu();
+            break;
+        case 'gameOver':
+            drawGameOverMenu();
+            break;
+    }
+
     requestAnimationFrame(gameLoop);
 }
 
@@ -218,6 +279,23 @@ document.addEventListener('keydown', (event) => {
     if (event.key === 'a' || event.key === 'A') keys.left = true;
     if (event.key === 'd' || event.key === 'D') keys.right = true;
     if (event.key === ' ' || event.key === 'w' || event.key === 'W') keys.space = true;
+
+    if (event.key === 'Enter') {
+        if (gameState === 'start' || gameState === 'gameOver') {
+            gameState = 'playing';
+            player.x = 1 * gridSize;
+            player.y = 14 * gridSize;
+            resetEnemies(); // Add this line to reset enemies
+        }
+    }
+
+    if (event.key === 'p' || event.key === 'P') {
+        if (gameState === 'playing') {
+            gameState = 'paused';
+        } else if (gameState === 'paused') {
+            gameState = 'playing';
+        }
+    }
 });
 
 document.addEventListener('keyup', (event) => {
