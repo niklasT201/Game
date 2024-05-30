@@ -40,26 +40,19 @@ const platforms = [
     { x: 66 * gridSize, y: 14 * gridSize, width: 4 * gridSize, height: gridSize },
 ];
 
-const enemies = [
-    { x: 8 * gridSize, y: 13 * gridSize, width: gridSize, height: gridSize, speed: 2, direction: 1, velocityY: 0, grounded: false, initialX: 8 * gridSize, initialY: 13 * gridSize },
-    { x: 24 * gridSize, y: 7 * gridSize, width: gridSize, height: gridSize, speed: 2, direction: 1, velocityY: 0, grounded: false, initialX: 24 * gridSize, initialY: 7 * gridSize },
-    { x: 38 * gridSize, y: 11 * gridSize, width: gridSize, height: gridSize, speed: 2, direction: 1, velocityY: 0, grounded: false, initialX: 38 * gridSize, initialY: 11 * gridSize }
-];
+let enemies = [];
+
+function initializeEnemies() {
+    enemies = [
+        { x: 8 * gridSize, y: 13 * gridSize, width: gridSize, height: gridSize, speed: 2, direction: 1, velocityY: 0, grounded: false, initialX: 8 * gridSize, initialY: 13 * gridSize },
+        { x: 24 * gridSize, y: 7 * gridSize, width: gridSize, height: gridSize, speed: 2, direction: 1, velocityY: 0, grounded: false, initialX: 24 * gridSize, initialY: 7 * gridSize },
+        { x: 38 * gridSize, y: 11 * gridSize, width: gridSize, height: gridSize, speed: 2, direction: 1, velocityY: 0, grounded: false, initialX: 38 * gridSize, initialY: 11 * gridSize }
+    ];
+}
 
 const goal = { x: 66 * gridSize, y: 13 * gridSize, width: gridSize, height: gridSize };
 
 let gameState = 'start';
-
-function resetEnemies() {
-    enemies.forEach(enemy => {
-        enemy.x = enemy.initialX;
-        enemy.y = enemy.initialY;
-        enemy.velocityY = 0;
-        enemy.direction = 1;
-        enemy.grounded = false;
-    });
-}
-
 
 function drawPlatform(platform) {
     ctx.fillStyle = '#654321';
@@ -79,6 +72,29 @@ function drawEnemy(enemy) {
 function drawGoal() {
     ctx.fillStyle = '#00ff00';
     ctx.fillRect(goal.x - camera.x, goal.y, goal.width, goal.height);
+}
+
+function handleEnemyCollision(enemy) {
+    const isPlayerAboveEnemy = player.y + player.height - player.velocityY <= enemy.y;
+
+    if (isPlayerAboveEnemy) {
+        // Player jumps on enemy
+        enemies.splice(enemies.indexOf(enemy), 1); // Remove the enemy
+        player.velocityY = -player.jumpForce / 1; // Make the player jump a bit when stomping
+    } else {
+        // Reset game state on collision
+        gameState = 'gameOver';
+       /*  resetPlayer();
+        initializeEnemies(); */ // Reset enemies when player gets hit
+    }
+}
+
+function resetPlayer() {
+    player.x = 1 * gridSize;
+    player.y = 14 * gridSize;
+    player.velocityX = 0;
+    player.velocityY = 0;
+    player.grounded = false;
 }
 
 function updatePlayer() {
@@ -138,10 +154,7 @@ function updatePlayer() {
             player.x + player.width > enemy.x &&
             player.y < enemy.y + enemy.height &&
             player.y + player.height > enemy.y) {
-            // Reset player position on collision
-            player.x = 1 * gridSize;
-            player.y = 14 * gridSize;
-            gameState = 'gameOver';
+            handleEnemyCollision(enemy); // Handle collision with the enemy
         }
     });
 
@@ -151,15 +164,15 @@ function updatePlayer() {
         player.y < goal.y + goal.height &&
         player.y + player.height > goal.y) {
         alert('You reached the goal!');
-        player.x = 1 * gridSize;
-        player.y = 14 * gridSize;
+        resetPlayer();
+        initializeEnemies(); // Reset enemies when goal is reached
     }
 
     // Reset player if they fall off the platforms
     if (player.y > canvas.height) {
-        player.x = 1 * gridSize;
-        player.y = 14 * gridSize;
         gameState = 'gameOver';
+      /*   resetPlayer();
+        initializeEnemies(); */
     }
 }
 
@@ -283,9 +296,8 @@ document.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
         if (gameState === 'start' || gameState === 'gameOver') {
             gameState = 'playing';
-            player.x = 1 * gridSize;
-            player.y = 14 * gridSize;
-            resetEnemies(); // Add this line to reset enemies
+            resetPlayer();
+            initializeEnemies(); // Reset enemies when the game starts
         }
     }
 
@@ -304,4 +316,5 @@ document.addEventListener('keyup', (event) => {
     if (event.key === ' ' || event.key === 'w' || event.key === 'W') keys.space = false;
 });
 
+initializeEnemies(); // Initialize enemies when the game loads
 gameLoop();
