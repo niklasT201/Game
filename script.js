@@ -228,6 +228,9 @@ function updateCamera() {
     if (camera.x + camera.width > platforms[platforms.length - 1].x + platforms[platforms.length - 1].width) {
         camera.x = platforms[platforms.length - 1].x + platforms[platforms.length - 1].width - camera.width;
     }
+   /*  function updateCamera() {
+        camera.x = player.x - canvas.width / 2 + player.width / 2;
+    } */
 }
 
 function drawStartMenu() {
