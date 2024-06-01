@@ -26,6 +26,7 @@ const keys = {
 };
 
 const gravity = 0.5;
+
 const platforms = [
     { x: 0, y: 15 * gridSize, width: 20 * gridSize, height: gridSize }, // ground
     { x: 6 * gridSize, y: 12 * gridSize, width: 3 * gridSize, height: gridSize },
@@ -113,6 +114,8 @@ function resetPlayer() {
     player.velocityX = 0;
     player.velocityY = 0;
     player.grounded = false;
+    player.jumpForce = player.defaultJumpForce;
+    jumpPowerUpActive = false;
 }
 
 function updatePlayer() {
