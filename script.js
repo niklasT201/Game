@@ -28,7 +28,8 @@ const keys = {
 const gravity = 0.5;
 
 const levels = [
-    {
+     // Level 1
+     {
         platforms: [
             { x: 0, y: 15 * gridSize, width: 20 * gridSize, height: gridSize }, // ground
             { x: 6 * gridSize, y: 12 * gridSize, width: 3 * gridSize, height: gridSize },
@@ -52,6 +53,7 @@ const levels = [
         goal: { x: 66 * gridSize, y: 13 * gridSize, width: gridSize, height: gridSize },
         jumpPowerUp: { x: 20 * gridSize, y: 10 * gridSize, width: gridSize, height: gridSize, active: true }
     },
+    // Level 2
     {
         platforms: [
             { x: 0, y: 15 * gridSize, width: 20 * gridSize, height: gridSize }, // ground
@@ -75,7 +77,76 @@ const levels = [
         ],
         goal: { x: 66 * gridSize, y: 13 * gridSize, width: gridSize, height: gridSize },
         jumpPowerUp: { x: 25 * gridSize, y: 7 * gridSize, width: gridSize, height: gridSize, active: true }
-    }
+    },
+     // Level 3
+     {
+        platforms: [
+            { x: 0, y: 15 * gridSize, width: 20 * gridSize, height: gridSize }, // ground
+            { x: 4 * gridSize, y: 12 * gridSize, width: 4 * gridSize, height: gridSize },
+            { x: 10 * gridSize, y: 10 * gridSize, width: 4 * gridSize, height: gridSize },
+            { x: 18 * gridSize, y: 13 * gridSize, width: 3 * gridSize, height: gridSize },
+            { x: 24 * gridSize, y: 9 * gridSize, width: 4 * gridSize, height: gridSize },
+            { x: 30 * gridSize, y: 14 * gridSize, width: 4 * gridSize, height: gridSize },
+            { x: 36 * gridSize, y: 8 * gridSize, width: 5 * gridSize, height: gridSize },
+            { x: 45 * gridSize, y: 11 * gridSize, width: 3 * gridSize, height: gridSize },
+            { x: 50 * gridSize, y: 7 * gridSize, width: 4 * gridSize, height: gridSize },
+            { x: 57 * gridSize, y: 10 * gridSize, width: 4 * gridSize, height: gridSize },
+            { x: 64 * gridSize, y: 14 * gridSize, width: 4 * gridSize, height: gridSize }
+        ],
+        enemies: [
+            { x: 6 * gridSize, y: 11 * gridSize, width: gridSize, height: gridSize, speed: 2, direction: 1, velocityY: 0, grounded: false, initialX: 6 * gridSize, initialY: 11 * gridSize },
+            { x: 26 * gridSize, y: 8 * gridSize, width: gridSize, height: gridSize, speed: 2, direction: 1, velocityY: 0, grounded: false, initialX: 26 * gridSize, initialY: 8 * gridSize },
+            { x: 48 * gridSize, y: 6 * gridSize, width: gridSize, height: gridSize, speed: 2, direction: 1, velocityY: 0, grounded: false, initialX: 48 * gridSize, initialY: 6 * gridSize }
+        ],
+        goal: { x: 64 * gridSize, y: 13 * gridSize, width: gridSize, height: gridSize },
+        jumpPowerUp: { x: 35 * gridSize, y: 7 * gridSize, width: gridSize, height: gridSize, active: true }
+    },
+    // Level 4
+    {
+        platforms: [
+            { x: 0, y: 15 * gridSize, width: 20 * gridSize, height: gridSize }, // ground
+            { x: 3 * gridSize, y: 10 * gridSize, width: 3 * gridSize, height: gridSize },
+            { x: 8 * gridSize, y: 8 * gridSize, width: 4 * gridSize, height: gridSize },
+            { x: 15 * gridSize, y: 11 * gridSize, width: 3 * gridSize, height: gridSize },
+            { x: 21 * gridSize, y: 14 * gridSize, width: 4 * gridSize, height: gridSize },
+            { x: 28 * gridSize, y: 9 * gridSize, width: 4 * gridSize, height: gridSize },
+            { x: 35 * gridSize, y: 12 * gridSize, width: 4 * gridSize, height: gridSize },
+            { x: 42 * gridSize, y: 10 * gridSize, width: 5 * gridSize, height: gridSize },
+            { x: 50 * gridSize, y: 7 * gridSize, width: 3 * gridSize, height: gridSize },
+            { x: 55 * gridSize, y: 11 * gridSize, width: 4 * gridSize, height: gridSize },
+            { x: 62 * gridSize, y: 14 * gridSize, width: 4 * gridSize, height: gridSize }
+        ],
+        enemies: [
+            { x: 9 * gridSize, y: 7 * gridSize, width: gridSize, height: gridSize, speed: 2, direction: 1, velocityY: 0, grounded: false, initialX: 9 * gridSize, initialY: 7 * gridSize },
+            { x: 23 * gridSize, y: 13 * gridSize, width: gridSize, height: gridSize, speed: 2, direction: 1, velocityY: 0, grounded: false, initialX: 23 * gridSize, initialY: 13 * gridSize },
+            { x: 37 * gridSize, y: 11 * gridSize, width: gridSize, height: gridSize, speed: 2, direction: 1, velocityY: 0, grounded: false, initialX: 37 * gridSize, initialY: 11 * gridSize }
+        ],
+        goal: { x: 62 * gridSize, y: 13 * gridSize, width: gridSize, height: gridSize },
+        jumpPowerUp: { x: 27 * gridSize, y: 8 * gridSize, width: gridSize, height: gridSize, active: true }
+    },
+    // Level 5
+    {
+        platforms: [
+            { x: 0, y: 15 * gridSize, width: 20 * gridSize, height: gridSize }, // ground
+            { x: 6 * gridSize, y: 9 * gridSize, width: 3 * gridSize, height: gridSize },
+            { x: 12 * gridSize, y: 14 * gridSize, width: 4 * gridSize, height: gridSize },
+            { x: 20 * gridSize, y: 11 * gridSize, width: 3 * gridSize, height: gridSize },
+            { x: 27 * gridSize, y: 8 * gridSize, width: 5 * gridSize, height: gridSize },
+            { x: 34 * gridSize, y: 12 * gridSize, width: 4 * gridSize, height: gridSize },
+            { x: 42 * gridSize, y: 10 * gridSize, width: 4 * gridSize, height: gridSize },
+            { x: 49 * gridSize, y: 7 * gridSize, width: 3 * gridSize, height: gridSize },
+            { x: 55 * gridSize, y: 14 * gridSize, width: 4 * gridSize, height: gridSize },
+            { x: 62 * gridSize, y: 8 * gridSize, width: 3 * gridSize, height: gridSize },
+            { x: 68 * gridSize, y: 11 * gridSize, width: 4 * gridSize, height: gridSize }
+        ],
+        enemies: [
+            { x: 8 * gridSize, y: 8 * gridSize, width: gridSize, height: gridSize, speed: 2, direction: 1, velocityY: 0, grounded: false, initialX: 8 * gridSize, initialY: 8 * gridSize },
+            { x: 22 * gridSize, y: 10 * gridSize, width: gridSize, height: gridSize, speed: 2, direction: 1, velocityY: 0, grounded: false, initialX: 22 * gridSize, initialY: 10 * gridSize },
+            { x: 38 * gridSize, y: 11 * gridSize, width: gridSize, height: gridSize, speed: 2, direction: 1, velocityY: 0, grounded: false, initialX: 38 * gridSize, initialY: 11 * gridSize }
+        ],
+        goal: { x: 68 * gridSize, y: 10 * gridSize, width: gridSize, height: gridSize },
+        jumpPowerUp: { x: 33 * gridSize, y: 6 * gridSize, width: gridSize, height: gridSize, active: true }
+    },
 ];
 
 let currentLevel = 0;
