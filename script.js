@@ -27,46 +27,69 @@ const keys = {
 
 const gravity = 0.5;
 
-const platforms = [
-    { x: 0, y: 15 * gridSize, width: 20 * gridSize, height: gridSize }, // ground
-    { x: 6 * gridSize, y: 12 * gridSize, width: 3 * gridSize, height: gridSize },
-    { x: 10 * gridSize, y: 14 * gridSize, width: 3 * gridSize, height: gridSize },
-    { x: 15 * gridSize, y: 10 * gridSize, width: 4 * gridSize, height: gridSize },
-    { x: 22 * gridSize, y: 8 * gridSize, width: 3 * gridSize, height: gridSize },
-    { x: 26 * gridSize, y: 11 * gridSize, width: 4 * gridSize, height: gridSize },
-    { x: 30 * gridSize, y: 14 * gridSize, width: 5 * gridSize, height: gridSize },
-    { x: 36 * gridSize, y: 12 * gridSize, width: 4 * gridSize, height: gridSize },
-    { x: 41 * gridSize, y: 9 * gridSize, width: 3 * gridSize, height: gridSize },
-    { x: 45 * gridSize, y: 7 * gridSize, width: 5 * gridSize, height: gridSize },
-    { x: 52 * gridSize, y: 12 * gridSize, width: 3 * gridSize, height: gridSize },
-    { x: 56 * gridSize, y: 14 * gridSize, width: 4 * gridSize, height: gridSize },
-    { x: 66 * gridSize, y: 14 * gridSize, width: 4 * gridSize, height: gridSize },
+const levels = [
+    {
+        platforms: [
+            { x: 0, y: 15 * gridSize, width: 20 * gridSize, height: gridSize }, // ground
+            { x: 6 * gridSize, y: 12 * gridSize, width: 3 * gridSize, height: gridSize },
+            { x: 10 * gridSize, y: 14 * gridSize, width: 3 * gridSize, height: gridSize },
+            { x: 15 * gridSize, y: 10 * gridSize, width: 4 * gridSize, height: gridSize },
+            { x: 22 * gridSize, y: 8 * gridSize, width: 3 * gridSize, height: gridSize },
+            { x: 26 * gridSize, y: 11 * gridSize, width: 4 * gridSize, height: gridSize },
+            { x: 30 * gridSize, y: 14 * gridSize, width: 5 * gridSize, height: gridSize },
+            { x: 36 * gridSize, y: 12 * gridSize, width: 4 * gridSize, height: gridSize },
+            { x: 41 * gridSize, y: 9 * gridSize, width: 3 * gridSize, height: gridSize },
+            { x: 45 * gridSize, y: 7 * gridSize, width: 5 * gridSize, height: gridSize },
+            { x: 52 * gridSize, y: 12 * gridSize, width: 3 * gridSize, height: gridSize },
+            { x: 56 * gridSize, y: 14 * gridSize, width: 4 * gridSize, height: gridSize },
+            { x: 66 * gridSize, y: 14 * gridSize, width: 4 * gridSize, height: gridSize },
+        ],
+        enemies: [
+            { x: 8 * gridSize, y: 13 * gridSize, width: gridSize, height: gridSize, speed: 2, direction: 1, velocityY: 0, grounded: false, initialX: 8 * gridSize, initialY: 13 * gridSize },
+            { x: 24 * gridSize, y: 7 * gridSize, width: gridSize, height: gridSize, speed: 2, direction: 1, velocityY: 0, grounded: false, initialX: 24 * gridSize, initialY: 7 * gridSize },
+            { x: 38 * gridSize, y: 11 * gridSize, width: gridSize, height: gridSize, speed: 2, direction: 1, velocityY: 0, grounded: false, initialX: 38 * gridSize, initialY: 11 * gridSize }
+        ],
+        goal: { x: 66 * gridSize, y: 13 * gridSize, width: gridSize, height: gridSize },
+        jumpPowerUp: { x: 20 * gridSize, y: 10 * gridSize, width: gridSize, height: gridSize, active: true }
+    },
+    {
+        platforms: [
+            { x: 0, y: 15 * gridSize, width: 20 * gridSize, height: gridSize }, // ground
+            { x: 5 * gridSize, y: 10 * gridSize, width: 3 * gridSize, height: gridSize },
+            { x: 9 * gridSize, y: 7 * gridSize, width: 3 * gridSize, height: gridSize },
+            { x: 13 * gridSize, y: 10 * gridSize, width: 3 * gridSize, height: gridSize },
+            { x: 18 * gridSize, y: 12 * gridSize, width: 3 * gridSize, height: gridSize },
+            { x: 24 * gridSize, y: 8 * gridSize, width: 3 * gridSize, height: gridSize },
+            { x: 30 * gridSize, y: 14 * gridSize, width: 5 * gridSize, height: gridSize },
+            { x: 37 * gridSize, y: 10 * gridSize, width: 3 * gridSize, height: gridSize },
+            { x: 41 * gridSize, y: 7 * gridSize, width: 3 * gridSize, height: gridSize },
+            { x: 45 * gridSize, y: 5 * gridSize, width: 5 * gridSize, height: gridSize },
+            { x: 52 * gridSize, y: 12 * gridSize, width: 3 * gridSize, height: gridSize },
+            { x: 56 * gridSize, y: 14 * gridSize, width: 4 * gridSize, height: gridSize },
+            { x: 66 * gridSize, y: 14 * gridSize, width: 4 * gridSize, height: gridSize },
+        ],
+        enemies: [
+            { x: 10 * gridSize, y: 9 * gridSize, width: gridSize, height: gridSize, speed: 2, direction: 1, velocityY: 0, grounded: false, initialX: 10 * gridSize, initialY: 9 * gridSize },
+            { x: 22 * gridSize, y: 11 * gridSize, width: gridSize, height: gridSize, speed: 2, direction: 1, velocityY: 0, grounded: false, initialX: 22 * gridSize, initialY: 11 * gridSize },
+            { x: 35 * gridSize, y: 13 * gridSize, width: gridSize, height: gridSize, speed: 2, direction: 1, velocityY: 0, grounded: false, initialX: 35 * gridSize, initialY: 13 * gridSize }
+        ],
+        goal: { x: 66 * gridSize, y: 13 * gridSize, width: gridSize, height: gridSize },
+        jumpPowerUp: { x: 25 * gridSize, y: 7 * gridSize, width: gridSize, height: gridSize, active: true }
+    }
 ];
 
-let enemies = [];
-
-function initializeEnemies() {
-    enemies = [
-        { x: 8 * gridSize, y: 13 * gridSize, width: gridSize, height: gridSize, speed: 2, direction: 1, velocityY: 0, grounded: false, initialX: 8 * gridSize, initialY: 13 * gridSize },
-        { x: 24 * gridSize, y: 7 * gridSize, width: gridSize, height: gridSize, speed: 2, direction: 1, velocityY: 0, grounded: false, initialX: 24 * gridSize, initialY: 7 * gridSize },
-        { x: 38 * gridSize, y: 11 * gridSize, width: gridSize, height: gridSize, speed: 2, direction: 1, velocityY: 0, grounded: false, initialX: 38 * gridSize, initialY: 11 * gridSize }
-    ];
-}
-
-const goal = { x: 66 * gridSize, y: 13 * gridSize, width: gridSize, height: gridSize };
-
-// Define the jump power-up
-const jumpPowerUp = {
-    x: 20 * gridSize,
-    y: 10 * gridSize,
-    width: gridSize,
-    height: gridSize,
-    active: true // Indicates if the power-up is active
-};
-
+let currentLevel = 0;
 let gameState = 'start';
+let platforms = levels[currentLevel].platforms;
+let enemies = [];
+let goal = levels[currentLevel].goal;
+let jumpPowerUp = levels[currentLevel].jumpPowerUp;
 let jumpPowerUpActive = false;
 let jumpPowerUpTimer = null;
+
+function initializeEnemies() {
+    enemies = levels[currentLevel].enemies.map(enemy => ({ ...enemy }));
+}
 
 function drawPlatform(platform) {
     ctx.fillStyle = '#654321';
@@ -116,6 +139,19 @@ function resetPlayer() {
     player.grounded = false;
     player.jumpForce = player.defaultJumpForce;
     jumpPowerUpActive = false;
+}
+
+function switchToNextLevel() {
+    currentLevel++;
+    if (currentLevel >= levels.length) {
+        alert('You have completed all levels!');
+        currentLevel = 0;
+    }
+    platforms = levels[currentLevel].platforms;
+    goal = levels[currentLevel].goal;
+    jumpPowerUp = levels[currentLevel].jumpPowerUp;
+    resetPlayer();
+    initializeEnemies();
 }
 
 function updatePlayer() {
@@ -190,8 +226,7 @@ function updatePlayer() {
         player.y < goal.y + goal.height &&
         player.y + player.height > goal.y) {
         alert('You reached the goal!');
-        resetPlayer();
-        initializeEnemies(); // Reset enemies when goal is reached
+        switchToNextLevel();
     }
 
     // Check collision with jump power-up
@@ -347,6 +382,7 @@ document.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
         if (gameState === 'start' || gameState === 'gameOver') {
             gameState = 'playing';
+            currentLevel = 0;
             resetPlayer();
             initializeEnemies(); // Reset enemies when the game starts
         }
