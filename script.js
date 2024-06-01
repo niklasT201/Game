@@ -14,13 +14,15 @@ const player = {
     velocityY: 0,
     speed: 5,
     jumpForce: 12,
-    grounded: false
+    grounded: false,
+    defaultJumpForce: 12, // Default jump force
 };
 
 const keys = {
     left: false,
     right: false,
-    space: false
+    space: false,
+    sprint: false
 };
 
 const gravity = 0.5;
@@ -52,7 +54,18 @@ function initializeEnemies() {
 
 const goal = { x: 66 * gridSize, y: 13 * gridSize, width: gridSize, height: gridSize };
 
+// Define the jump power-up
+const jumpPowerUp = {
+    x: 20 * gridSize,
+    y: 10 * gridSize,
+    width: gridSize,
+    height: gridSize,
+    active: true // Indicates if the power-up is active
+};
+
 let gameState = 'start';
+let jumpPowerUpActive = false;
+let jumpPowerUpTimer = null;
 
 function drawPlatform(platform) {
     ctx.fillStyle = '#654321';
@@ -74,6 +87,13 @@ function drawGoal() {
     ctx.fillRect(goal.x - camera.x, goal.y, goal.width, goal.height);
 }
 
+function drawJumpPowerUp() {
+    if (jumpPowerUp.active) {
+        ctx.fillStyle = '#ffff00'; // Yellow color for the power-up
+        ctx.fillRect(jumpPowerUp.x - camera.x, jumpPowerUp.y, jumpPowerUp.width, jumpPowerUp.height);
+    }
+}
+
 function handleEnemyCollision(enemy) {
     const isPlayerAboveEnemy = player.y + player.height - player.velocityY <= enemy.y;
 
@@ -84,8 +104,6 @@ function handleEnemyCollision(enemy) {
     } else {
         // Reset game state on collision
         gameState = 'gameOver';
-       /*  resetPlayer();
-        initializeEnemies(); */ // Reset enemies when player gets hit
     }
 }
 
@@ -98,10 +116,15 @@ function resetPlayer() {
 }
 
 function updatePlayer() {
+    let currentSpeed = player.speed;
+    if (keys.sprint) {
+        currentSpeed *= 1.5;
+    }
+
     if (keys.left) {
-        player.velocityX = -player.speed;
+        player.velocityX = -currentSpeed;
     } else if (keys.right) {
-        player.velocityX = player.speed;
+        player.velocityX = currentSpeed;
     } else {
         player.velocityX = 0;
     }
@@ -168,11 +191,19 @@ function updatePlayer() {
         initializeEnemies(); // Reset enemies when goal is reached
     }
 
+    // Check collision with jump power-up
+    if (jumpPowerUp.active &&
+        player.x < jumpPowerUp.x + jumpPowerUp.width &&
+        player.x + player.width > jumpPowerUp.x &&
+        player.y < jumpPowerUp.y + jumpPowerUp.height &&
+        player.y + player.height > jumpPowerUp.y) {
+        jumpPowerUp.active = false;
+        activateJumpPowerUp();
+    }
+
     // Reset player if they fall off the platforms
     if (player.y > canvas.height) {
         gameState = 'gameOver';
-      /*   resetPlayer();
-        initializeEnemies(); */
     }
 }
 
@@ -213,6 +244,18 @@ function updateEnemies() {
             enemy.direction *= -1;
         }
     });
+}
+
+function activateJumpPowerUp() {
+    if (!jumpPowerUpActive) {
+        player.jumpForce *= 1.5; // Increase jump force by 50%
+        jumpPowerUpActive = true;
+
+        jumpPowerUpTimer = setTimeout(() => {
+            player.jumpForce = player.defaultJumpForce; // Reset jump force
+            jumpPowerUpActive = false;
+        }, 10000); // 10 seconds
+    }
 }
 
 const camera = {
@@ -279,6 +322,7 @@ function gameLoop() {
             drawPlayer();
             enemies.forEach(drawEnemy);
             drawGoal();
+            drawJumpPowerUp();
             break;
         case 'paused':
             drawPauseMenu();
@@ -295,6 +339,7 @@ document.addEventListener('keydown', (event) => {
     if (event.key === 'a' || event.key === 'A') keys.left = true;
     if (event.key === 'd' || event.key === 'D') keys.right = true;
     if (event.key === ' ' || event.key === 'w' || event.key === 'W') keys.space = true;
+    if (event.key === 'Shift') keys.sprint = true;
 
     if (event.key === 'Enter') {
         if (gameState === 'start' || gameState === 'gameOver') {
@@ -317,6 +362,7 @@ document.addEventListener('keyup', (event) => {
     if (event.key === 'a' || event.key === 'A') keys.left = false;
     if (event.key === 'd' || event.key === 'D') keys.right = false;
     if (event.key === ' ' || event.key === 'w' || event.key === 'W') keys.space = false;
+    if (event.key === 'Shift') keys.sprint = false;
 });
 
 initializeEnemies(); // Initialize enemies when the game loads
