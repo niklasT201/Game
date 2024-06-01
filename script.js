@@ -79,8 +79,8 @@ function handleEnemyCollision(enemy) {
 
     if (isPlayerAboveEnemy) {
         // Player jumps on enemy
+        player.velocityY = -player.jumpForce / 0.9; // Make the player jump a bit when stomping
         enemies.splice(enemies.indexOf(enemy), 1); // Remove the enemy
-        player.velocityY = -player.jumpForce / 1; // Make the player jump a bit when stomping
     } else {
         // Reset game state on collision
         gameState = 'gameOver';
