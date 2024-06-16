@@ -189,6 +189,13 @@ function drawJumpPowerUp() {
     }
 }
 
+function drawDisplay() {
+     // Draw level text
+     ctx.font = '20px Arial';
+     ctx.fillStyle = '#000000';
+     ctx.fillText(`Level: ${currentLevel + 1}`, 100, 200); // Display current level
+}
+
 function handleEnemyCollision(enemy) {
     const isPlayerAboveEnemy = player.y + player.height - player.velocityY <= enemy.y;
 
@@ -432,6 +439,7 @@ function gameLoop() {
             enemies.forEach(drawEnemy);
             drawGoal();
             drawJumpPowerUp();
+            drawDisplay();
             break;
         case 'paused':
             drawPauseMenu();
@@ -453,7 +461,7 @@ document.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
         if (gameState === 'start' || gameState === 'gameOver') {
             gameState = 'playing';
-            currentLevel = 0;
+            /* currentLevel = 0; */
             resetPlayer();
             initializeEnemies(); // Reset enemies when the game starts
         }
