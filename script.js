@@ -157,6 +157,7 @@ let goal = levels[currentLevel].goal;
 let jumpPowerUp = levels[currentLevel].jumpPowerUp;
 let jumpPowerUpActive = false;
 let jumpPowerUpTimer = null;
+let jumpPowerUpStartTime = null;
 
 function initializeEnemies() {
     enemies = levels[currentLevel].enemies.map(enemy => ({ ...enemy }));
@@ -190,11 +191,20 @@ function drawJumpPowerUp() {
 }
 
 function drawDisplay() {
-     // Draw level text
-     ctx.font = '20px Arial';
-     ctx.fillStyle = '#000000';
-     ctx.fillText(`Level: ${currentLevel + 1}`, 100, 200); // Display current level
+    // Draw level text
+    ctx.font = '20px Arial';
+    ctx.fillStyle = '#000000';
+    ctx.fillText(`Level: ${currentLevel + 1}`, 100, 200); // Display current level
+
+    if (jumpPowerUpActive) {
+        const elapsedTime = (Date.now() - jumpPowerUpStartTime) / 1000; // Time in seconds
+        const remainingTime = Math.max(10 - elapsedTime, 0).toFixed(1); // Calculate remaining time
+        ctx.font = '20px Arial';
+        ctx.fillStyle = '#000000';
+        ctx.fillText(`Power Up: ${remainingTime} s`, 135, 250); // Display remaining time
+    }
 }
+
 
 function handleEnemyCollision(enemy) {
     const isPlayerAboveEnemy = player.y + player.height - player.velocityY <= enemy.y;
@@ -364,15 +374,23 @@ function updateEnemies() {
 
 function activateJumpPowerUp() {
     if (!jumpPowerUpActive) {
-        player.jumpForce *= 1.5; // Increase jump force by 50%
+        player.jumpForce *= 1.5;
         jumpPowerUpActive = true;
-
+        jumpPowerUpStartTime = Date.now();
         jumpPowerUpTimer = setTimeout(() => {
-            player.jumpForce = player.defaultJumpForce; // Reset jump force
+            player.jumpForce = player.defaultJumpForce;
             jumpPowerUpActive = false;
-        }, 10000); // 10 seconds
+        }, 10000); // 10 seconds duration
+    } else {
+        clearTimeout(jumpPowerUpTimer); // Clear the previous timer
+        jumpPowerUpStartTime = Date.now(); // Reset the start time
+        jumpPowerUpTimer = setTimeout(() => {
+            player.jumpForce = player.defaultJumpForce;
+            jumpPowerUpActive = false;
+        }, 10000); // Reset the timer to 10 seconds
     }
 }
+
 
 const camera = {
     x: 0,
@@ -461,7 +479,6 @@ document.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
         if (gameState === 'start' || gameState === 'gameOver') {
             gameState = 'playing';
-            /* currentLevel = 0; */
             resetPlayer();
             initializeEnemies(); // Reset enemies when the game starts
         }
